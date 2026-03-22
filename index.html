@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Daily Planner</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<!-------------------------------------------------------------------------------------------->
+
+
+<body>
+
+    <div class="header">
+
+        <button id="toggleSidebar">☰</button>
+
+        <div class="header-center">
+            <h2 id="greeting"></h2>
+        </div>
+
+        <div class="header-right">
+            <div id="clock"></div>
+            <div id="date"></div>
+        </div>
+
+    </div>
+
+<!-------------------------------------------------------------------------------------------->
+
+    <div class="container">
+
+        <div class="sidebar" id="sidebar">
+
+            <h5 style="text-align: center;">Planner</h5>
+
+            <button data-section="home">🏠 <span>Home</span></button>
+            <button data-section="todo">📋 <span>Todo</span></button>
+            <button data-section="completed">✅ <span>Completed Tasks</span></button>
+            <button data-section="timer">⏱️ <span>Timer</span></button>
+            <button data-section="calendar">📅 <span>Calendar</span></button>
+            <button data-section="diary">📖 <span>Diary</span></button>
+
+        </div>
+
+<!-------------------------------------------------------------------------------------------->
+        
+        <div class="main" id="main">
+
+            <section id="home" class="section">
+                <div class="home-grid">
+                    <!-- Today's Stats -->
+                    <div class="stats-card">
+                        <h2>Today's Progress</h2>
+                        <div class="today-stats">
+                            <div class="stat-item">
+                                <div class="stat-number" id="todayHabits">0</div>
+                                <div class="stat-label">Habits</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="todayFocus">0m</div>
+                                <div class="stat-label">Focus</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number" id="todayTasks">0</div>
+                                <div class="stat-label">Tasks</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Streak -->
+                    <div class="streak-card">
+                        <h2>Streak</h2>
+                        <div class="streak-display">
+                            <div class="streak-number" id="streakCount">7</div>
+                            <div class="streak-label">days</div>
+                            <span class="streak-fire">🔥</span>
+                        </div>
+                    </div>
+
+                    <!-- Habit Chart -->
+                    <div class="chart-card">
+                        <h3>Habits</h3>
+                        <div style="position: relative; height: 200px;">
+                            <canvas id="habitsChart"></canvas>
+                        </div>
+                        <div class="chart-stats">
+                            <div id="habitsProgress">85%</div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div class="quick-actions-card">
+                        <h3>Quick Actions</h3>
+                        <div class="quick-buttons">
+                            <button class="quick-btn primary" onclick="showSection('todo')">📝 New Task</button>
+                            <button class="quick-btn" onclick="showSection('timer')">⏱️ Focus Timer</button>
+                            <button class="quick-btn" onclick="showSection('completed')">📊 Habits</button>
+                        </div>
+                    </div>
+
+                    <!-- Weekly Chart -->
+                    <div class="overview-card">
+                        <h3>This Week</h3>
+                        <div style="position: relative; height: 140px;">
+                            <canvas id="weeklyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Quote -->
+                    <div class="quote-card">
+                        <div class="quote-icon">💪</div>
+                        <div class="quote-text">Consistency beats intensity.</div>
+                    </div>
+                </div>
+            </section>
+
+<!-------------------------------------------------------------------------------------------->
+
+            <section id="todo" class="section">
+
+                <h1>Todo List</h1>
+
+                <div class="todo-input">
+                    <input type="text" id="taskInput" placeholder="Enter a task">
+                    <button id="addTaskBtn">Add Task</button>
+                </div>
+
+                <br>
+
+                <div class="filters">
+                    <button data-filter="all">All</button>
+                    <button data-filter="active">Active</button>
+                    <button data-filter="completed">Completed</button>
+                </div>
+                <hr>
+                <br>
+
+                <ul id="taskList"></ul>
+                <p id="taskCounter"></p>
+
+            </section>
+
+
+<!-------------------------------------------------------------------------------------------->
+
+
+
+            <section id="completed" class="section">
+                <h1>📊 Habit Tracker</h1>
+                
+                <!-- Month Navigation - FIXED POSITION -->
+                <div class="tracker-controls">
+                    <div class="tracker-header">
+                        <button id="prevMonthBtn">‹ Previous Month</button>
+                        <h2 id="trackerMonth">March 2026</h2>
+                        <button id="nextMonthBtn">Next Month ›</button>
+                    </div>
+                    <button id="addHabitBtn" class="fixed-add-btn">+ Add Habit</button>
+                </div>
+
+                <!-- Scrollable Habits Container -->
+                <div class="habits-scroll-container">
+                    <div id="habitsGrid" class="habits-grid"></div>
+                    <div id="noHabitsMessage" class="no-habits">
+                        <p>No habits yet. Add your first habit to start tracking! 🎯</p>
+                    </div>
+                </div>
+
+                <!-- Habits Grid -->
+                <div id="habitsContainer">
+                    <div id="habitsGrid" class="habits-grid"></div>
+                    <div id="noHabitsMessage" class="no-habits">
+                        <p>No habits yet. Add your first habit to start tracking! 🎯</p>
+                    </div>
+                </div>
+
+                <!-- Add/Edit Habit Modal -->
+                <div id="habitModal" class="modal">
+                    <div class="modal-content">
+                        <h3 id="modalTitle">Add New Habit</h3>
+                        <input type="text" id="habitName" placeholder="e.g. Study Java, Skip rope, Read pages">
+                        <select id="habitType">
+                            <option value="checkbox">Daily Checkbox ✓</option>
+                            <option value="number">Number (Weight, Pages, Reps)</option>
+                            <option value="text">Text Note 📝</option>
+                        </select>
+                        <div class="color-picker">
+                            <label>Color:</label>
+                            <input type="color" id="habitColor" value="#4CAF50">
+                        </div>
+                        <div class="modal-buttons">
+                            <button id="saveHabitBtn">Save Habit</button>
+                            <button id="cancelHabitBtn">Cancel</button>
+                            <button id="deleteHabitBtn" style="display: none;">Delete Habit</button>
+                        </div>
+                        <input type="hidden" id="editingHabitId">
+                    </div>
+                </div>
+            </section>
+
+<!-------------------------------------------------------------------------------------------->
+
+            <section id="timer" class="section">
+                <h1>Focus Timer</h1>
+
+                <!-- MODE SWITCH -->
+                <div class="mode-switch">
+                    <button id="timerModeBtn" class="active">Timer</button>
+                    <button id="stopwatchModeBtn">Stopwatch</button>
+                </div>
+
+                <!-- TIMER INPUT -->
+                <div id="timerControls">
+                    <input type="number" id="hoursInput" placeholder="HH">
+                    <input type="number" id="minutesInput" placeholder="MM">
+                    <input type="number" id="secondsInput" placeholder="SS">
+                    <button id="setTimerBtn">Set</button>
+                </div>
+
+                <!-- DISPLAY -->
+                <div class="timer-display">
+                    <h2 id="timeDisplay">00:00:00</h2>
+                </div>
+
+                <!-- CONTROLS -->
+                <div class="controls">
+                    <button id="startBtn">Start</button>
+                    <button id="pauseBtn">Pause</button>
+                    <button id="resetBtn">Reset</button>
+                </div>
+
+                <hr>
+
+                <h3>Today</h3>
+                <p id="todayTime" style="text-align: center;">0 minutes</p>
+                <br>
+                <h3>This Week</h3>
+                <canvas id="weeklyChart"></canvas>
+            </section>
+
+
+<!-------------------------------------------------------------------------------------------->
+
+
+
+            <section id="calendar" class="section">
+                <h1>📅 Calendar</h1>
+                
+                <!-- Calendar Header -->
+                <div class="calendar-header">
+                    <button id="prevMonth">‹ Prev</button>
+                    <h2 id="monthYear"></h2>
+                    <button id="nextMonth">Next ›</button>
+                </div>
+
+                <!-- Days of Week -->
+                <div class="calendar-weekdays">
+                    <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div>
+                    <div>Thu</div><div>Fri</div><div>Sat</div>
+                </div>
+
+                <!-- Calendar Grid -->
+                <div class="calendar-grid" id="calendarGrid"></div>
+
+                <!-- Add Event Form -->
+                <div class="event-form">
+                    <h3>Add Event</h3>
+                    <input type="date" id="eventDate" required>
+                    <input type="text" id="eventTitle" placeholder="Event Title" maxlength="50">
+                    <textarea id="eventDesc" placeholder="Description (optional)" maxlength="200"></textarea>
+                    <button id="addEventBtn">Add Event</button>
+                </div>
+
+                <!-- Today's Events -->
+                <div class="today-events">
+                    <h3>Today's Events</h3>
+                    <div id="todayEventsList"></div>
+                </div>
+            </section>
+
+
+
+<!-------------------------------------------------------------------------------------------->
+
+
+            <section id="diary" class="section">
+                <h1>Diary</h1>
+                <h3>Enter today's entry:</h3>
+                <textarea id="entry" placeholder="How was your day..."></textarea>
+                <br>
+                <button id="saveEntryBtn">Save</button>
+
+                <br><br>
+                <hr>
+
+                <h5>View previous entries</h5>
+                <div id="entriesList"></div>
+            </section>
+
+        </div>
+
+    </div>
+<!-------------------------------------------------------------------------------------------->
+    <script src="js/navigation.js"></script>
+    <script src="js/header.js"></script>
+    <script src="js/todo.js"></script>
+    <script src="js/tracker.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/timer.js"></script>
+    <script src="js/calendar.js"></script>
+    <script type="module" src="js/diary.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="js/home.js"></script>
+
+</body>
+</html>
